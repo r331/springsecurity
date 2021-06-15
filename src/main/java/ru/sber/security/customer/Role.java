@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toSet;
 import static ru.sber.security.customer.Permission.DELETE;
 import static ru.sber.security.customer.Permission.READ;
 
@@ -22,6 +23,6 @@ public enum Role {
         this.permissions = stream(permissions)
                 .map(Enum::name)
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 }

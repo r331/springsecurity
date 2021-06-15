@@ -18,6 +18,7 @@ import static javax.persistence.EnumType.STRING;
 @Table(name = "STOREUSER")
 @Getter
 @Setter
+@ToString
 public class StoreUserEntity {
     @Id
     private UUID id;
