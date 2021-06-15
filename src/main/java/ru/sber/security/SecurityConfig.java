@@ -2,7 +2,7 @@ package ru.sber.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,27 +12,40 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import ru.sber.security.customer.Permission;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyAuthority(Permission.DELETE.name())
-                //.antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole(Role.ADMIN.name())
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
+public class SecurityConfig {
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher("/api/**")
+                    .authorizeRequests(authorize -> authorize
+                            .anyRequest().hasRole("ADMIN")
+                    )
+                    .httpBasic(withDefaults());
+        }
+    }
+
+    @Configuration
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .authorizeRequests(authorize -> authorize
+                            .anyRequest().authenticated()
+                    )
+                    .formLogin(withDefaults());
+        }
     }
 
     @Bean
-    @Override
-    protected UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder().username("admin")
                 .password(passwordEncoder().encode("admin"))
                 .roles("ADMIN")
