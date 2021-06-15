@@ -13,7 +13,7 @@ public class CustomerServiceImpl implements CustomerService {
     final List<Customer> customers = new ArrayList<>();
 
     @PostConstruct
-    void fillCustomers(){
+    void fillCustomers() {
         customers.add(new Customer(UUID.fromString("00ba0b5f-9888-4c28-8140-34f4ab0f8574"), "Arnold", "Schwarzenegger"));
         customers.add(new Customer(UUID.randomUUID(), "Sylvester", "Stallone"));
         customers.add(new Customer(UUID.randomUUID(), "Dolph", "Lundgren"));

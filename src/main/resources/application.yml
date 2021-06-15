@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: store
+
+  datasource:
+    username: ${PG_USER:postgres}
+    password: ${PG_PASS:changeme} # 9aFUS1BtXD my-release-postgresql-headless
+    url: jdbc:postgresql://${PG_HOST:localhost}:5432/${PG_DATABASE:postgres}?reWriteBatchedInserts=true&prepareThreshold=0
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
+  jdbc:
+    template:
+      fetch-size: 50000
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 10000
+          batch_versioned_data: true
+          fetch_size: 10000
+      org:
+        hibernate:
+          envers:
+            global_with_modified_flag: true
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  lifecycle:
+    timeoutPerShutdownPhase: 40s
