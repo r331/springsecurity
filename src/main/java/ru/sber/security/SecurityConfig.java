@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import ru.sber.security.customer.Role;
+import ru.sber.security.customer.Permission;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyAuthority(Permission.DELETE.name())
+                //.antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole(Role.ADMIN.name())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -39,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails customer = User.builder().username("customer")
                 .password(passwordEncoder().encode("customer"))
                 .roles("CUSTOMER")
+                //.authorities("DELETE")
                 .build();
         return new InMemoryUserDetailsManager(admin, customer);
     }
