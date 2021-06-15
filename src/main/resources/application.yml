@@ -32,3 +32,8 @@ spring:
       ddl-auto: none
   lifecycle:
     timeoutPerShutdownPhase: 40s
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
